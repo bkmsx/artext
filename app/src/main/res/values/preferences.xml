@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="list_favorite_font">list_favorite</string>
+    <string name="selected_font">selected_font</string>
+</resources>
