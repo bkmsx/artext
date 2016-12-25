@@ -4,13 +4,17 @@
     android:layout_height="match_parent">
     <TextView
         android:id="@+id/text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="3"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:textColor="@android:color/white"
         android:text="Aa Bb Cc"/>
     <ImageView
         android:id="@+id/favorite"
-        android:layout_width="40dp"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="match_parent"
-        android:layout_marginLeft="5dp"
+        android:padding="5dp"
         android:src="@drawable/ic_star_normal"/>
 </LinearLayout>

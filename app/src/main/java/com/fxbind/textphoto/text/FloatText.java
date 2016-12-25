@@ -9,7 +9,9 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Region;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -21,9 +23,12 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.fxbind.textphoto.R;
+import com.fxbind.textphoto.export.TextHolder;
 import com.fxbind.textphoto.fragment.TextFragment;
 import com.fxbind.textphoto.helper.Utils;
 import com.fxbind.textphoto.main.MainActivity;
+
+import java.io.File;
 
 
 /**
@@ -60,6 +65,11 @@ public class FloatText extends ImageView {
     public int mColor;
     public int mBackgroundColor;
     public float size, sizeScale;
+    public int fontId;
+    public int[] anchorPoint;
+
+    public TextHolder textHolder;
+    public OnFloatTextTouchListener mCallback;
 
     public static final int ROTATE_CONSTANT = 30;
     public static final int INIT_X = 300, INIT_Y = 300, INIT_SIZE = 60;
@@ -74,6 +84,7 @@ public class FloatText extends ImageView {
         this.text = text;
         mActivity = activity;
         mTextFragment = mActivity.mTextFragment;
+        mCallback = mTextFragment;
         int fontPosition = Utils.getSharedPref(mActivity).getInt(mActivity.getString(R.string.selected_font), 0);
         fontPath = mTextFragment.mListFont.get(fontPosition);
         mTypeface = Typeface.createFromFile(fontPath);
@@ -81,6 +92,8 @@ public class FloatText extends ImageView {
         textPaint = new TextPaint();
         textPaint.setTextSize(size);
         setText(text);
+        textHolder = new TextHolder();
+        anchorPoint = mTextFragment.getLayoutImagePosition();
 
         borderTopLeft = new float[2];
         borderBottomRight = new float[2];
@@ -103,6 +116,30 @@ public class FloatText extends ImageView {
         mBackgroundColor = Color.TRANSPARENT;
     }
 
+    public void updateTextHolder(float layoutScale){
+        float textCorrection = 20;
+        String textFile = Utils.getTempFolder()+"/"+System.currentTimeMillis()+".txt";
+        Utils.writeToFile(new File(textFile), text);
+        textHolder.textPath = textFile;
+        textHolder.fontPath = this.fontPath;
+        textHolder.size = this.sizeScale*layoutScale;
+        textHolder.fontColor = convertToHexColor(this.mColor);
+        textHolder.boxColor = convertToHexColor(this.mBackgroundColor);
+        textHolder.x = this.xExport*layoutScale - textCorrection;
+        textHolder.y = this.yExport*layoutScale - textCorrection;
+        textHolder.rotate = (float) (-this.rotation* Math.PI/180);
+        textHolder.width = (int) ((this.widthScale+FloatText.PADDING*2)*layoutScale);
+        textHolder.height = (int) ((this.heightScale+FloatText.PADDING*2)*layoutScale);
+        textHolder.padding = FloatText.PADDING * layoutScale;
+    }
+
+    public String convertToHexColor(int color) {
+        String resultColor = "";
+        String s = String.format("%08X", (0xFFFFFFFF & color));
+        resultColor += s.substring(2) + "@0x" + s.substring(0, 2);
+        return resultColor;
+    }
+
     public void setTextBgrColor(int color){
         mBackgroundColor = color;
         invalidate();
@@ -123,8 +160,9 @@ public class FloatText extends ImageView {
         resetLayout();
     }
 
-    public void setFont(String fontPath){
+    public void setFont(String fontPath, int fontId){
         this.fontPath = fontPath;
+        this.fontId = fontId;
         mTypeface = Typeface.createFromFile(fontPath);
         resetLayout();
     }
@@ -142,7 +180,7 @@ public class FloatText extends ImageView {
         }
         width = (int) maxWidth;
 
-        int lineSpace = 3;
+        int lineSpace = 15;
         bound = new Rect();
         textPaint.getTextBounds(text, 0, text.length(), bound);
         height = bound.height()*lineCount + lineSpace*(lineCount-1);
@@ -207,6 +245,11 @@ public class FloatText extends ImageView {
         }
     }
 
+    public interface OnFloatTextTouchListener {
+        void onTouch(float x, float y);
+        void onSelected(FloatText floatText);
+    }
+
     private static int getQuadrant(double x, double y) {
         if (x >= 0) {
             return y >= 0 ? 1 : 4;
@@ -261,12 +304,12 @@ public class FloatText extends ImageView {
         getLayoutLimit();
 
         // befor N canvas apply matrix from leftside of screen
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
-//            matrix.postTranslate(mActivity.mVideoViewLeft, 0);
-//            Rect rectBound = canvas.getClipBounds();
-//            canvas.clipRect(rectBound.left, rectBound.top,
-//                    rectBound.right + mActivity.mVideoViewLeft, rectBound.bottom, Region.Op.REPLACE);
-//        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+            matrix.postTranslate(anchorPoint[0], anchorPoint[1]);
+            Rect rectBound = canvas.getClipBounds();
+            canvas.clipRect(rectBound.left, rectBound.top,
+                    rectBound.right + anchorPoint[0], rectBound.bottom + anchorPoint[1], Region.Op.REPLACE);
+        }
 
         canvas.setMatrix(matrix);
 
@@ -367,7 +410,7 @@ public class FloatText extends ImageView {
                     }  else {
                         touch = 0;
                     }
-
+                    log("touch = " + touch);
                     isTouch = false;
                     break;
                 case MotionEvent.ACTION_MOVE:
@@ -401,7 +444,9 @@ public class FloatText extends ImageView {
                         if (touch != 0) {
                             performClick();
                         } else {
-
+                            drawBorder(false);
+                            mActivity.setBtnDeleteTextVisible(false);
+                            mCallback.onTouch(oldX, oldY);
                         }
                     }
                     break;
@@ -416,10 +461,13 @@ public class FloatText extends ImageView {
         public void onClick(View view) {
         if (drawBorder) {
             drawBorder(false);
-
+            mActivity.setBtnDeleteTextVisible(false);
+            log("onClickListener false");
         } else {
             drawBorder(true);
-
+            log("onClickListener true");
+            mCallback.onSelected(FloatText.this);
+            mActivity.setBtnDeleteTextVisible(true);
         }
         invalidate();
         }

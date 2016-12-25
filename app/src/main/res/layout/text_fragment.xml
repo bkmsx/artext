@@ -5,32 +5,39 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:id="@+id/activity_main"
+        android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <Button
-            android:id="@+id/btn_export"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Hello World!" />
-
         <RelativeLayout
-            android:id="@+id/layout_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true">
-
+            android:id="@+id/layout_top"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/layout_edit_text"
+            android:background="#777">
+            <RelativeLayout
+                android:id="@+id/layout_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true">
+                <ImageView
+                    android:id="@+id/image_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            </RelativeLayout>
             <ImageView
-                android:id="@+id/image_view"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:id="@+id/btn_first_addtext"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_centerInParent="true"
+                android:src="@drawable/ic_add_project"
+                android:visibility="gone"/>
         </RelativeLayout>
         <RelativeLayout
+            android:id="@+id/layout_edit_text"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_alignParentBottom="true"
-            android:background="#555555">
+            android:background="#2f2c2c">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -43,13 +50,13 @@
                     android:orientation="vertical">
                     <Button
                         android:id="@+id/btn_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/button_width"
+                        android:layout_height="@dimen/button_height"
                         android:text="Text"/>
                     <Button
                         android:id="@+id/btn_font"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/button_width"
+                        android:layout_height="@dimen/button_height"
                         android:layout_marginTop="30dp"
                         android:text="Font"/>
                 </LinearLayout>
@@ -61,13 +68,13 @@
                     android:orientation="vertical">
                     <Button
                         android:id="@+id/btn_color"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/button_width"
+                        android:layout_height="@dimen/button_height"
                         android:text="Color"/>
                     <Button
                         android:id="@+id/btn_background"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="@dimen/button_width"
+                        android:layout_height="@dimen/button_height"
                         android:layout_marginTop="30dp"
                         android:text="Background"/>
                 </LinearLayout>
@@ -99,11 +106,18 @@
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="#"/>
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:text="#"
+                            android:textColor="@android:color/white"/>
                         <EditText
                             android:id="@+id/text_hex"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content" />
+                            android:layout_height="wrap_content"
+                            android:maxLines="1"
+                            android:inputType="text"
+                            android:textColor="@android:color/white"
+                            android:layout_marginRight="30dp"/>
                     </LinearLayout>
 
                 </LinearLayout>
@@ -122,7 +136,7 @@
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:visibility="gone"
-                android:background="#555555">
+                android:background="#462828">
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"

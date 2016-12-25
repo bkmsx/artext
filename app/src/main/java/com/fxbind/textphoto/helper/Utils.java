@@ -20,7 +20,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * Created by Fx Bind on 11/11/2016.
@@ -38,6 +41,11 @@ public class Utils {
 
     public static SharedPreferences getSharedPref(Context context) {
         return PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public static String getDefaultName() {
+        return new SimpleDateFormat("yy_MM_dd_HH_mm_ss", Locale.getDefault())
+                .format(new Date(System.currentTimeMillis()));
     }
 
     public static Bitmap createDefaultBitmap(){
@@ -126,6 +134,16 @@ public class Utils {
             file.mkdirs();
         }
         return fontFolder;
+    }
+
+    public static String getBackgroundFolder(){
+        String direct = Environment.getExternalStorageDirectory().toString();
+        String backgroundFolder = direct+"/"+ Constants.OUTPUT_FOLDER+"/"+Constants.BACKGROUND_FOLDER;
+        File file = new File(backgroundFolder);
+        if (!file.exists()){
+            file.mkdirs();
+        }
+        return backgroundFolder;
     }
 
     public static String getInternalDirectory(){

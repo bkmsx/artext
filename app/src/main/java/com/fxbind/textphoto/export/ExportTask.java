@@ -6,7 +6,9 @@ import android.os.AsyncTask;
 
 import com.fxbind.textphoto.ffmpeg.FFmpeg;
 import com.fxbind.textphoto.helper.Utils;
+import com.fxbind.textphoto.text.FloatText;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -16,22 +18,33 @@ import java.util.LinkedList;
 public class ExportTask extends AsyncTask<Void, Void, Void>{
     ProgressDialog mProgressDialog;
     Context mContext;
+    ArrayList<FloatText> mListText;
+    String mImagePath;
+    String mOutputPath;
+    OnExportTaskListener mCallback;
 
-    public ExportTask(Context context) {
+    public ExportTask(Context context, ArrayList<FloatText> listText, String imagePath) {
         mContext = context;
+        mListText = listText;
+        mImagePath = imagePath;
+        mCallback = (OnExportTaskListener) context;
     }
     private LinkedList<String> getCommand(){
         LinkedList<String> command = new LinkedList<>();
-        String input = Utils.getInternalDirectory() + "/tien.png";
-        String output = Utils.getInternalDirectory() + "/outien.png";
-        String font = Utils.getInternalDirectory() + "/font.otf";
-        String filter = "[v]drawtext=fontfile="+font+":text='bkmsx':fontsize=50:fontcolor=red";
+        mOutputPath = Utils.getOutputFolder() + "/" + Utils.getDefaultName() + ".png";
+
+        String in = "[0:v]";
+        String out = "[image]";
+        String filter = TextFilter.getFilter(in, out, mListText);
+
         command.add("-i");
-        command.add(input);
+        command.add(mImagePath);
         command.add("-filter_complex");
         command.add(filter);
+        command.add("-map");
+        command.add(out);
         command.add("-y");
-        command.add(output);
+        command.add(mOutputPath);
         return command;
     }
 
@@ -46,6 +59,7 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
     @Override
     protected void onPostExecute(Void aVoid) {
         mProgressDialog.dismiss();
+        mCallback.onExportCompleted(mOutputPath);
         super.onPostExecute(aVoid);
     }
 
@@ -53,5 +67,9 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
     protected Void doInBackground(Void... voids) {
         FFmpeg.getInstance(mContext).executeFFmpegCommand(getCommand());
         return null;
+    }
+
+    public interface OnExportTaskListener {
+        void onExportCompleted(String outputPath);
     }
 }

@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">TextPhoto</string>
+    <string name="app_name">Texton</string>
+    <string name="menu_add_text_title">Add Text</string>
+    <string name="menu_delete_text_title">Delete</string>
+    <string name="menu_change_image_title">Change Image</string>
+    <string name="menu_setting_title">Gallery</string>
+    <string name="menu_export_title">Export</string>
+    <string name="menu_close_gallery_title">Close</string>
+    <string name="image_gallery_title">Images</string>
+    <string name="review_title">Export Done</string>
+    <string name="menu_share_title">Share</string>
+    <string name="gallery_title">Gallery</string>
+    <string name="menu_contact_us">Contact us</string>
+    <string name="menu_rate">Rate 5 stars</string>
 </resources>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.fxbind.textphoto.R;
@@ -85,6 +86,8 @@ public class FontAdapter extends ArrayAdapter<String> {
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.list_font_item, null);
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 90);
+        view.setLayoutParams(params);
         if (selectedPosition == position) {
             view.setBackgroundColor(Color.RED);
         } else {

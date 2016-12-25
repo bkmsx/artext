@@ -8,4 +8,5 @@ public interface Constants {
     String OUTPUT_FOLDER = "TextOn";
     String TEMP_FOLDER = "temp";
     String FONT_FOLDER = "font";
+    String BACKGROUND_FOLDER = "background";
 }
