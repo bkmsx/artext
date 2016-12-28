@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Texton</string>
+    <string name="app_name">ArText</string>
     <string name="menu_add_text_title">Add Text</string>
     <string name="menu_delete_text_title">Delete</string>
     <string name="menu_change_image_title">Change Image</string>
@@ -7,9 +7,16 @@
     <string name="menu_export_title">Export</string>
     <string name="menu_close_gallery_title">Close</string>
     <string name="image_gallery_title">Images</string>
-    <string name="review_title">Export Done</string>
+    <string name="review_title">Done</string>
     <string name="menu_share_title">Share</string>
     <string name="gallery_title">Gallery</string>
     <string name="menu_contact_us">Contact us</string>
     <string name="menu_rate">Rate 5 stars</string>
+    <string name="text_button_text">TEXT</string>
+    <string name="color_button_text">COLOR</string>
+    <string name="font_button_text">FONT</string>
+    <string name="background_button_text">BACKGROUND</string>
+    <string name="ok_button_text">OK</string>
+    <string name="favorite_button_text">FAVORITE</string>
+    <string name="all_button_text">ALL</string>
 </resources>

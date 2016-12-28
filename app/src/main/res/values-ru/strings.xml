@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ArText</string>
+    <string name="menu_add_text_title">Добавить текст</string>
+    <string name="menu_delete_text_title">Удалить</string>
+    <string name="menu_change_image_title">Изменить изображение</string>
+    <string name="menu_setting_title">Галерея</string>
+    <string name="menu_export_title">Вывозить</string>
+    <string name="menu_close_gallery_title">Закрыт</string>
+    <string name="image_gallery_title">Изображений</string>
+    <string name="review_title">Выполнен</string>
+    <string name="menu_share_title">Поделиться</string>
+    <string name="gallery_title">Галерея</string>
+    <string name="menu_contact_us">Связаться с нами</string>
+    <string name="menu_rate">Ставка 5 звезд</string>
+    <string name="text_button_text">ТЕКСТ</string>
+    <string name="color_button_text">ЦВЕТ</string>
+    <string name="font_button_text">ШРИФТ</string>
+    <string name="background_button_text">ФОН</string>
+    <string name="ok_button_text">ДА</string>
+    <string name="favorite_button_text">ФАВОРИТ</string>
+    <string name="all_button_text">ВСЁ</string>
+</resources>

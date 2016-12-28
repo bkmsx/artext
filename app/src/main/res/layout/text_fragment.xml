@@ -37,6 +37,7 @@
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_alignParentBottom="true"
+
             android:background="#2f2c2c">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -47,36 +48,38 @@
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:orientation="vertical">
                     <Button
                         android:id="@+id/btn_text"
                         android:layout_width="@dimen/button_width"
                         android:layout_height="@dimen/button_height"
-                        android:text="Text"/>
+                        android:text="@string/text_button_text"/>
                     <Button
                         android:id="@+id/btn_font"
                         android:layout_width="@dimen/button_width"
                         android:layout_height="@dimen/button_height"
                         android:layout_marginTop="30dp"
-                        android:text="Font"/>
+                        android:text="@string/font_button_text"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_weight="1"
                     android:layout_height="match_parent"
                     android:gravity="center"
+                    android:padding="5dp"
                     android:orientation="vertical">
                     <Button
                         android:id="@+id/btn_color"
                         android:layout_width="@dimen/button_width"
                         android:layout_height="@dimen/button_height"
-                        android:text="Color"/>
+                        android:text="@string/color_button_text"/>
                     <Button
                         android:id="@+id/btn_background"
                         android:layout_width="@dimen/button_width"
                         android:layout_height="@dimen/button_height"
                         android:layout_marginTop="30dp"
-                        android:text="Background"/>
+                        android:text="@string/background_button_text"/>
                 </LinearLayout>
             </LinearLayout>
             <LinearLayout
@@ -99,7 +102,7 @@
                         android:layout_gravity="center_horizontal"
                         android:layout_marginTop="20dp"
                         android:layout_marginBottom="20dp"
-                        android:text="Ok"/>
+                        android:text="@string/ok_button_text"/>
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
@@ -148,12 +151,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="10dp"
-                        android:text="Favorite"/>
+                        android:text="@string/favorite_button_text"/>
                     <Button
                         android:id="@+id/btn_ok_font"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="OK"/>
+                        android:text="@string/ok_button_text"/>
                 </LinearLayout>
                 <LinearLayout
                     android:layout_width="0dp"

@@ -26,6 +26,7 @@ import com.fxbind.textphoto.R;
 import com.fxbind.textphoto.export.TextHolder;
 import com.fxbind.textphoto.fragment.TextFragment;
 import com.fxbind.textphoto.helper.Utils;
+import com.fxbind.textphoto.interfaces.OnFloatViewTouchListener;
 import com.fxbind.textphoto.main.MainActivity;
 
 import java.io.File;
@@ -69,7 +70,7 @@ public class FloatText extends ImageView {
     public int[] anchorPoint;
 
     public TextHolder textHolder;
-    public OnFloatTextTouchListener mCallback;
+    public OnFloatViewTouchListener mCallback;
 
     public static final int ROTATE_CONSTANT = 30;
     public static final int INIT_X = 300, INIT_Y = 300, INIT_SIZE = 60;
@@ -231,7 +232,6 @@ public class FloatText extends ImageView {
         double y = centerPoint[1] - yTouch;
 
         switch (getQuadrant(x, y)) {
-
             case 1:
                 return Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
             case 2:
@@ -243,11 +243,6 @@ public class FloatText extends ImageView {
             default:
                 return 0;
         }
-    }
-
-    public interface OnFloatTextTouchListener {
-        void onTouch(float x, float y);
-        void onSelected(FloatText floatText);
     }
 
     private static int getQuadrant(double x, double y) {
@@ -445,7 +440,6 @@ public class FloatText extends ImageView {
                             performClick();
                         } else {
                             drawBorder(false);
-                            mActivity.setBtnDeleteTextVisible(false);
                             mCallback.onTouch(oldX, oldY);
                         }
                     }

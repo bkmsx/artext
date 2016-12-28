@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">ArText</string>
+    <string name="menu_add_text_title">Chèn Chữ</string>
+    <string name="menu_delete_text_title">Xóa</string>
+    <string name="menu_change_image_title">Thay ảnh</string>
+    <string name="menu_setting_title">Bộ sưu tập</string>
+    <string name="menu_export_title">Lưu</string>
+    <string name="menu_close_gallery_title">Đóng</string>
+    <string name="image_gallery_title">Ảnh</string>
+    <string name="review_title">Xong</string>
+    <string name="menu_share_title">Chia sẻ</string>
+    <string name="gallery_title">Bộ sưu tập</string>
+    <string name="menu_contact_us">Liên hệ</string>
+    <string name="menu_rate">Chọn 5 sao</string>
+    <string name="text_button_text">CHỮ</string>
+    <string name="color_button_text">MÀU</string>
+    <string name="font_button_text">KIỂU</string>
+    <string name="background_button_text">NỀN</string>
+    <string name="ok_button_text">OK</string>
+    <string name="favorite_button_text">ƯA THÍCH</string>
+    <string name="all_button_text">TẤT CẢ</string>
+</resources>

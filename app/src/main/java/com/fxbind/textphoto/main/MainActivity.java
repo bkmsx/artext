@@ -1,6 +1,7 @@
 package com.fxbind.textphoto.main;
 
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
@@ -35,12 +36,14 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
     public boolean mOpenSubFolder;
     public boolean mOpenReview;
     public boolean mOpenGallery;
+    public boolean mOpenFileManager;
 
     public String mOutputPath;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         setContentView(R.layout.activity_main);
         mTextFragment = TextFragment.newInstance(this);
         getSupportFragmentManager().beginTransaction().
@@ -59,6 +62,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         setMainGroupMenuVisible(false);
         setBtnBackActionBarVisible(true);
         setTitle(getString(R.string.image_gallery_title));
+        mOpenFileManager = true;
     }
 
     public void backToTextFragment() {
@@ -78,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         mOpenSubFolder = false;
         mOpenReview = false;
         mOpenGallery = false;
+        mOpenFileManager = false;
     }
 
     public void setBtnShareVisible(boolean visible) {
@@ -197,7 +202,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
                     deleteFile();
                     return true;
                 }
-                mTextFragment.deleteText();
+                mTextFragment.onBtnDeleteClick();
                 setBtnDeleteTextVisible(false);
                 break;
             case R.id.menu_share:
@@ -212,16 +217,18 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             case R.id.menu_rate:
                 rate5Stars();
                 break;
+            case R.id.menu_add_sticker:
+                mTextFragment.addSticker();
+                break;
             case android.R.id.home:
                 onBackClick();
                 break;
-
         }
         return super.onOptionsItemSelected(item);
     }
 
     private void rate5Stars(){
-        Uri uri = Uri.parse("market://details?id=" + "com.hecorat.circleprogress");
+        Uri uri = Uri.parse("market://details?id=" + getPackageName());
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, uri);
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
                 Intent.FLAG_ACTIVITY_NEW_DOCUMENT |
@@ -255,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             return true;
         }
 
-        if (mOpenReview || mOpenGallery) {
+        if (mOpenReview || mOpenFileManager|| mOpenGallery) {
             backToTextFragment();
             return true;
         }
@@ -267,6 +274,6 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         if (onBackClick()) {
             return;
         }
-        super.onBackPressed();
+//        super.onBackPressed();
     }
 }

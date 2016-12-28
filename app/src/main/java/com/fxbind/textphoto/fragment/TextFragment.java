@@ -30,19 +30,22 @@ import com.fxbind.textphoto.R;
 import com.fxbind.textphoto.color.ColorPickerView;
 import com.fxbind.textphoto.export.ExportTask;
 import com.fxbind.textphoto.helper.Utils;
+import com.fxbind.textphoto.interfaces.OnFloatViewTouchListener;
 import com.fxbind.textphoto.main.MainActivity;
+import com.fxbind.textphoto.sticker.FloatSticker;
 import com.fxbind.textphoto.text.EditTextDialog;
 import com.fxbind.textphoto.text.FloatText;
 import com.fxbind.textphoto.text.FontAdapter;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * Created by Bkmsx on 12/14/2016.
  */
 
 public class TextFragment extends Fragment implements EditTextDialog.DialogClickListener
-        , ColorPickerView.OnColorChangedListener, FloatText.OnFloatTextTouchListener{
+        , ColorPickerView.OnColorChangedListener, OnFloatViewTouchListener {
     static private MainActivity mActivity;
 
     private RelativeLayout mMainLayout;
@@ -60,16 +63,18 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     public FloatText mSelectedFloatText;
     public ColorPickerView mColorPicker;
     public FontAdapter mFontAdapter;
+    public FloatSticker mSelectedSticker;
 
     public ArrayList<String> mListFont;
     public ArrayList<FloatText> mListText;
+    public ArrayList<FloatSticker> mListSticker;
 
     public String mImagePath;
 
     private int mImageWidth, mImageHeight;
-    private boolean mOpenLayoutColor;
     private boolean mChooseColor;
     public int mCountText;
+    private boolean mChooseText;
 
     private static final String FONT_FOLDER = "fonts";
 
@@ -129,8 +134,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mBtnAddFirstTime = (ImageView) view.findViewById(R.id.btn_first_addtext);
 
         mListFont = new ArrayList<>();
-
         mListText = new ArrayList<>();
+        mListSticker = new ArrayList<>();
 
         setImagePath();
         if (mActivity.mFirstRun) {
@@ -149,31 +154,48 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
     @Override
     public void onTouch(float x, float y) {
+        mActivity.setBtnDeleteTextVisible(false);
+
         for (FloatText floatText : mListText) {
             if (x >= floatText.xMin && x <= floatText.xMax
                     && y >= floatText.yMin && y <= floatText.yMax) {
                 setSelectedText(floatText);
-                return;
+                mChooseText = true;
+            } else {
+                floatText.drawBorder(false);
+            }
+        }
+
+        for (FloatSticker floatSticker : mListSticker) {
+            if (x >= floatSticker.xMin && x <= floatSticker.xMax
+                    && y >= floatSticker.yMin && y <= floatSticker.yMax) {
+                floatSticker.drawBorder(true);
+                mSelectedSticker = floatSticker;
+                mActivity.setBtnDeleteTextVisible(true);
+                mChooseText = false;
+            } else {
+                floatSticker.drawBorder(false);
             }
         }
     }
 
     @Override
-    public void onSelected(FloatText floatText) {
-        mSelectedFloatText = floatText;
+    public void onSelected(View view) {
+        if (view instanceof FloatText) {
+            mSelectedFloatText = (FloatText) view;
+            mChooseText = true;
+        } else {
+            mSelectedSticker = (FloatSticker) view;
+            mChooseText = false;
+        }
+
     }
 
     private void setSelectedText(FloatText floatText) {
         mSelectedFloatText = floatText;
         updateLayoutEditText();
         mActivity.setBtnDeleteTextVisible(true);
-        for (FloatText text : mListText) {
-            if (text.equals(floatText)) {
-                text.drawBorder(true);
-            } else {
-                text.drawBorder(false);
-            }
-        }
+        floatText.drawBorder(true);
     }
 
     public void updateLayoutEditText(){
@@ -209,6 +231,9 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     @Override
     public void onPause() {
         super.onPause();
+        if (mFontAdapter == null) {
+            return;
+        }
         mFontAdapter.saveListFavorite();
         mFontAdapter.saveSeletedFont();
     }
@@ -218,10 +243,10 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         public void onClick(View view) {
             if (mFontAdapter.onlyFavorite) {
                 mFontAdapter.showAllFont();
-                mBtnFavorite.setText("Favorite");
+                mBtnFavorite.setText(mActivity.getString(R.string.favorite_button_text));
             } else{
                 mFontAdapter.showOnlyFavorite();
-                mBtnFavorite.setText("All");
+                mBtnFavorite.setText(mActivity.getString(R.string.all_button_text));
             }
         }
     };
@@ -294,6 +319,9 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         @Override
         public void onClick(View view) {
             openLayoutFont(false);
+            unhighlightSticker();
+            mSelectedFloatText.drawBorder(true);
+            unhighlightSticker();
         }
     };
 
@@ -307,8 +335,15 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             mLayoutColor.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.color_layout));
             mEdtHex.setText(convertToHexColor(color, false));
             mSelectedFloatText.drawBorder(true);
+            unhighlightSticker();
         }
     };
+
+    private void unhighlightSticker(){
+        if (mSelectedSticker != null) {
+            mSelectedSticker.drawBorder(false);
+        }
+    }
 
     View.OnClickListener onBtnBgrClick = new View.OnClickListener() {
         @Override
@@ -320,13 +355,13 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             mLayoutColor.setBackgroundColor(ContextCompat.getColor(mActivity, R.color.background_layout));
             mEdtHex.setText(convertToHexColor(color, false));
             mSelectedFloatText.drawBorder(true);
+            unhighlightSticker();
         }
     };
 
     private void openLayoutColor(boolean open) {
         int visible = open? View.VISIBLE : View.GONE;
         mLayoutColor.setVisibility(visible);
-        mOpenLayoutColor = open;
     }
 
     @Override
@@ -357,6 +392,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             dialog.show(getFragmentManager().beginTransaction(), "edit text");
             dialog.setOnDialogClickListener(TextFragment.this);
             showSoftKeyboard();
+            unhighlightSticker();
+            mSelectedFloatText.drawBorder(true);
         }
     };
 
@@ -394,15 +431,52 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
     }
 
+    public void addSticker() {
+        String imagePath = Utils.getInternalDirectory() + "/tien.png";
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
+        FloatSticker floatSticker = new FloatSticker(mActivity, bitmap);
+        mLayoutImage.addView(floatSticker);
+        mListSticker.add(floatSticker);
+        mSelectedFloatText.drawBorder(false);
+        if (mSelectedSticker != null) {
+            mSelectedSticker.drawBorder(false);
+        }
+        mSelectedSticker = floatSticker;
+        mChooseText = false;
+        mActivity.setBtnDeleteTextVisible(true);
+    }
+
     public void addText() {
         FloatText floatText = new FloatText(mActivity, "Text here");
         mLayoutImage.addView(floatText);
         mListText.add(floatText);
+        unhighlightFloatText();
         mSelectedFloatText = floatText;
         setSelectedText(floatText);
         mCountText++;
         setLayoutEditTextEnable(true);
         updateLayoutEditText();
+        unhighlightSticker();
+        mChooseText = true;
+    }
+
+    private void unhighlightFloatText(){
+        if (mSelectedFloatText != null) {
+            mSelectedFloatText.drawBorder(false);
+        }
+    }
+
+    public void onBtnDeleteClick() {
+        if (mChooseText) {
+            deleteText();
+        } else {
+            deleteSticker();
+        }
+    }
+
+    public void deleteSticker(){
+        mLayoutImage.removeView(mSelectedSticker);
+        mListSticker.remove(mSelectedSticker);
     }
 
     public void deleteText() {
@@ -410,7 +484,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mListText.remove(mSelectedFloatText);
         mCountText--;
         if (mCountText == 0) {
-            mActivity.setBtnExportVisible(false);
             setLayoutEditTextEnable(false);
         }
     }
