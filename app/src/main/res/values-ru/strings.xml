@@ -4,7 +4,7 @@
     <string name="menu_delete_text_title">Удалить</string>
     <string name="menu_change_image_title">Изменить изображение</string>
     <string name="menu_setting_title">Галерея</string>
-    <string name="menu_export_title">Вывозить</string>
+    <string name="menu_export_title">Сохранить</string>
     <string name="menu_close_gallery_title">Закрыт</string>
     <string name="image_gallery_title">Изображений</string>
     <string name="review_title">Выполнен</string>
@@ -19,4 +19,5 @@
     <string name="ok_button_text">ДА</string>
     <string name="favorite_button_text">ФАВОРИТ</string>
     <string name="all_button_text">ВСЁ</string>
+    <string name="notify_delete_file">Фотография была удалена</string>
 </resources>

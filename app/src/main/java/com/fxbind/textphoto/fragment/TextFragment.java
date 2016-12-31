@@ -1,19 +1,25 @@
 package com.fxbind.textphoto.fragment;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.TranslateAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -31,21 +37,22 @@ import com.fxbind.textphoto.color.ColorPickerView;
 import com.fxbind.textphoto.export.ExportTask;
 import com.fxbind.textphoto.helper.Utils;
 import com.fxbind.textphoto.interfaces.OnFloatViewTouchListener;
+import com.fxbind.textphoto.interfaces.OnStickerClickListener;
 import com.fxbind.textphoto.main.MainActivity;
 import com.fxbind.textphoto.sticker.FloatSticker;
+import com.fxbind.textphoto.sticker.FragmentSticker;
 import com.fxbind.textphoto.text.EditTextDialog;
 import com.fxbind.textphoto.text.FloatText;
 import com.fxbind.textphoto.text.FontAdapter;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * Created by Bkmsx on 12/14/2016.
  */
 
 public class TextFragment extends Fragment implements EditTextDialog.DialogClickListener
-        , ColorPickerView.OnColorChangedListener, OnFloatViewTouchListener {
+        , ColorPickerView.OnColorChangedListener, OnFloatViewTouchListener, OnStickerClickListener {
     static private MainActivity mActivity;
 
     private RelativeLayout mMainLayout;
@@ -59,6 +66,10 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     private ListView mListViewFont;
     private RelativeLayout mLayoutEditText;
     private ImageView mBtnAddFirstTime;
+    private ViewPager mViewPager;
+    private LinearLayout mTabLayout1, mTabLayout2, mTabLayout3;
+    private LinearLayout mLayoutSticker, mTabLayoutClose;
+    private RelativeLayout mLayoutFloatView;
 
     public FloatText mSelectedFloatText;
     public ColorPickerView mColorPicker;
@@ -75,6 +86,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     private boolean mChooseColor;
     public int mCountText;
     private boolean mChooseText;
+    private boolean mOpenLayoutSticker;
+    private int rotate = 0;
 
     private static final String FONT_FOLDER = "fonts";
 
@@ -133,6 +146,21 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
         mBtnAddFirstTime = (ImageView) view.findViewById(R.id.btn_first_addtext);
 
+        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mViewPager.addOnPageChangeListener(onViewPagerChanged);
+
+        mTabLayout1 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_1);
+        mTabLayout2 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_2);
+        mTabLayout3 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_3);
+        mTabLayoutClose = (LinearLayout) view.findViewById(R.id.tab_layout_close);
+        mTabLayout1.setOnClickListener(onTabClickListener);
+        mTabLayout2.setOnClickListener(onTabClickListener);
+        mTabLayout3.setOnClickListener(onTabClickListener);
+        mTabLayoutClose.setOnClickListener(onTabClickListener);
+
+        mLayoutSticker = (LinearLayout) view.findViewById(R.id.layout_sticker);
+        mLayoutFloatView = (RelativeLayout) view.findViewById(R.id.layout_floatview);
+
         mListFont = new ArrayList<>();
         mListText = new ArrayList<>();
         mListSticker = new ArrayList<>();
@@ -142,6 +170,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             setBtnAddFirstTime();
             mImageView.setImageBitmap(null);
             mActivity.setBtnAddTextVisible(false);
+            mActivity.setBtnAddStickerVisible(false);
+            rotate = 0;
         }
 
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLayoutEditText.getLayoutParams();
@@ -150,6 +180,122 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         setLayoutEditTextEnable(false);
         new CopyFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
+    }
+
+    public void rotateImage(){
+        rotate += 90;
+        if (rotate == 360) {
+            rotate = 0;
+        }
+        Matrix matrix = new Matrix();
+        matrix.postRotate(rotate);
+        Bitmap bitmap = BitmapFactory.decodeFile(mImagePath, null);
+        Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        mImageWidth = rotateBitmap.getWidth();
+        mImageHeight = rotateBitmap.getHeight();
+        mImageView.setImageBitmap(rotateBitmap);
+        setLayoutImage();
+        resetAllFloatView();
+    }
+
+    public void resetAllFloatView() {
+        mListSticker.clear();
+        mListText.clear();
+        mCountText = 0;
+        mLayoutFloatView.removeAllViews();
+    }
+
+    View.OnClickListener onTabClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (v.equals(mTabLayout1)) {
+                highlightSelectedTab(0);
+                mViewPager.setCurrentItem(0);
+            } else if (v.equals(mTabLayout2)){
+                highlightSelectedTab(1);
+                mViewPager.setCurrentItem(1);
+            } else if (v.equals(mTabLayout3)){
+                highlightSelectedTab(2);
+                mViewPager.setCurrentItem(2);
+            } else if (v.equals(mTabLayoutClose)){
+                closeLayoutSticker();
+            }
+        }
+    };
+
+    private void highlightSelectedTab(int position) {
+        int tabBackground = position == 0 ? R.drawable.ic_background_tab : R.drawable.ic_background_unselect;
+        mTabLayout1.setBackgroundResource(tabBackground);
+        tabBackground = position == 1 ? R.drawable.ic_background_tab : R.drawable.ic_background_unselect;
+        mTabLayout2.setBackgroundResource(tabBackground);
+        tabBackground = position == 2 ? R.drawable.ic_background_tab : R.drawable.ic_background_unselect;
+        mTabLayout3.setBackgroundResource(tabBackground);
+    }
+
+    public void toggleLayoutSticker() {
+        if (mOpenLayoutSticker) {
+            closeLayoutSticker();
+        } else {
+            openLayoutSticker();
+        }
+    }
+
+    public void openLayoutSticker() {
+        StikerPagerAdapter stikerPagerAdapter = new StikerPagerAdapter(mActivity.getSupportFragmentManager());
+        mViewPager.setAdapter(stikerPagerAdapter);
+
+        TranslateAnimation animation = new TranslateAnimation(0, 0, mLayoutSticker.getHeight(), 0);
+        animation.setDuration(500);
+        mLayoutSticker.setVisibility(View.VISIBLE);
+        mLayoutSticker.startAnimation(animation);
+        mOpenLayoutSticker = true;
+    }
+
+    public void closeLayoutSticker() {
+        TranslateAnimation animation = new TranslateAnimation(0, 0, 0, mLayoutSticker.getHeight());
+        animation.setDuration(500);
+        mLayoutSticker.setVisibility(View.GONE);
+        mLayoutSticker.startAnimation(animation);
+        mOpenLayoutSticker = false;
+    }
+
+    ViewPager.OnPageChangeListener onViewPagerChanged = new ViewPager.OnPageChangeListener() {
+        @Override
+        public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+        }
+
+        @Override
+        public void onPageSelected(int position) {
+            highlightSelectedTab(position);
+        }
+
+        @Override
+        public void onPageScrollStateChanged(int state) {
+
+        }
+    };
+
+    @Override
+    public void onStickerClick(String path) {
+        addSticker(path);
+    }
+
+    class StikerPagerAdapter extends FragmentPagerAdapter {
+
+        public StikerPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+
+        @Override
+        public Fragment getItem(int position) {
+            return FragmentSticker.newInstance(mActivity);
+        }
+
+        @Override
+        public int getCount() {
+            return 3;
+        }
     }
 
     @Override
@@ -428,27 +574,23 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             params.width = (int) widthLimit;
             params.height = (int) (widthLimit*mImageHeight/mImageWidth);
         }
-
     }
 
-    public void addSticker() {
-        String imagePath = Utils.getInternalDirectory() + "/tien.png";
-        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
-        FloatSticker floatSticker = new FloatSticker(mActivity, bitmap);
-        mLayoutImage.addView(floatSticker);
+    public void addSticker(String imagePath) {
+        FloatSticker floatSticker = new FloatSticker(mActivity, imagePath);
+        mLayoutFloatView.addView(floatSticker);
         mListSticker.add(floatSticker);
-        mSelectedFloatText.drawBorder(false);
-        if (mSelectedSticker != null) {
-            mSelectedSticker.drawBorder(false);
-        }
+        unhighlightFloatText();
+        unhighlightSticker();
         mSelectedSticker = floatSticker;
         mChooseText = false;
         mActivity.setBtnDeleteTextVisible(true);
+        mActivity.setBtnExportVisible(true);
     }
 
     public void addText() {
         FloatText floatText = new FloatText(mActivity, "Text here");
-        mLayoutImage.addView(floatText);
+        mLayoutFloatView.addView(floatText);
         mListText.add(floatText);
         unhighlightFloatText();
         mSelectedFloatText = floatText;
@@ -472,6 +614,12 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         } else {
             deleteSticker();
         }
+        if (mCountText == 0) {
+            setLayoutEditTextEnable(false);
+            if (mListSticker.size() == 0) {
+                mActivity.setBtnExportVisible(false);
+            }
+        }
     }
 
     public void deleteSticker(){
@@ -483,9 +631,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mLayoutImage.removeView(mSelectedFloatText);
         mListText.remove(mSelectedFloatText);
         mCountText--;
-        if (mCountText == 0) {
-            setLayoutEditTextEnable(false);
-        }
     }
 
     TextView.OnEditorActionListener onEditColorActionListener = new TextView.OnEditorActionListener() {
@@ -517,23 +662,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         }
     };
 
-    View.OnKeyListener onEdtHexKeyListener = new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-            if (keyCode == KeyEvent.KEYCODE_ENTER) {
-                int color = convertToIntegerColor(mEdtHex.getText().toString());
-                mColorPicker.setColor(color);
-                mEdtHex.clearFocus();
-                if (mChooseColor) {
-                    mSelectedFloatText.setTextColor(color);
-                } else {
-                    mSelectedFloatText.setBackgroundColor(color);
-                }
-            }
-            return false;
-        }
-    };
-
     private int convertToIntegerColor (String hexColor) throws IllegalArgumentException{
         return Color.parseColor("#" + hexColor);
     }
@@ -543,7 +671,11 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         for (FloatText text : mListText) {
             text.updateTextHolder(layoutScale);
         }
-        new ExportTask(mActivity, mListText, mImagePath).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        for (FloatSticker sticker : mListSticker) {
+            sticker.updateImageHolder(layoutScale);
+        }
+        new ExportTask(mActivity, mListText, mListSticker, mImagePath, rotate)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     private float getLayoutScale(){

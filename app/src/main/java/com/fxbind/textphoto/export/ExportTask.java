@@ -6,6 +6,7 @@ import android.os.AsyncTask;
 
 import com.fxbind.textphoto.ffmpeg.FFmpeg;
 import com.fxbind.textphoto.helper.Utils;
+import com.fxbind.textphoto.sticker.FloatSticker;
 import com.fxbind.textphoto.text.FloatText;
 
 import java.util.ArrayList;
@@ -19,26 +20,55 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
     ProgressDialog mProgressDialog;
     Context mContext;
     ArrayList<FloatText> mListText;
+    ArrayList<FloatSticker> mListSticker;
     String mImagePath;
     String mOutputPath;
     OnExportTaskListener mCallback;
 
-    public ExportTask(Context context, ArrayList<FloatText> listText, String imagePath) {
+    int mRotate;
+
+    public ExportTask(Context context, ArrayList<FloatText> listText,
+                      ArrayList<FloatSticker> listSticker, String imagePath, int rotate) {
         mContext = context;
         mListText = listText;
         mImagePath = imagePath;
+        mListSticker = listSticker;
+        mRotate = rotate;
         mCallback = (OnExportTaskListener) context;
     }
     private LinkedList<String> getCommand(){
         LinkedList<String> command = new LinkedList<>();
         mOutputPath = Utils.getOutputFolder() + "/" + Utils.getDefaultName() + ".png";
 
+        String filter = "";
         String in = "[0:v]";
         String out = "[image]";
-        String filter = TextFilter.getFilter(in, out, mListText);
-
+        if (mRotate != 0) {
+            out = "[image];";
+            if (mRotate == 90) {
+                filter += in + "transpose=1" + out;
+            } else if (mRotate == 180) {
+                filter += in + "transpose=1, transpose=1" + out;
+            } else {
+                filter += in + "transpose=2" + out;
+            }
+            in = "[image]";
+        }
+        if (mListSticker.size() > 0) {
+            out = "[sticker];";
+            filter += ImageFilter.getFilter(in, out, mListSticker, 1);
+            in = "[sticker]";
+        }
+        if (mListText.size() > 0) {
+            out = "[text]";
+            filter += TextFilter.getFilter(in, out, mListText);
+        }
         command.add("-i");
         command.add(mImagePath);
+        for (FloatSticker sticker : mListSticker) {
+            command.add("-i");
+            command.add(sticker.imagePath);
+        }
         command.add("-filter_complex");
         command.add(filter);
         command.add("-map");

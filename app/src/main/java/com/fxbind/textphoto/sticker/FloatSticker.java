@@ -10,6 +10,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.Region;
+import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -18,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.fxbind.textphoto.R;
+import com.fxbind.textphoto.export.ImageHolder;
 import com.fxbind.textphoto.interfaces.OnFloatViewTouchListener;
 import com.fxbind.textphoto.main.MainActivity;
 
@@ -44,19 +47,26 @@ public class FloatSticker extends ImageView {
     public float widthScale, heightScale;
     public boolean isCompact;
     public boolean drawBorder;
+    public int[] anchorPoint;
+
+    public String imagePath;
+
     private OnFloatViewTouchListener mCallback;
+    public ImageHolder imageHolder;
 
-    public static final int MAX_DIMENSION = 300;
+    public static final int MAX_DIMENSION = 200;
     public static final int ROTATE_CONSTANT = 30;
-    public static final int INIT_X = 300, INIT_Y = 300;
+    public static final int INIT_X = 200, INIT_Y = 200;
 
-    public FloatSticker(Context context, Bitmap bitmap) {
+    public FloatSticker(Context context, String imagePath) {
         super(context);
         mActivity = (MainActivity) context;
         mCallback = mActivity.mTextFragment;
+        this.imagePath = imagePath;
+        Bitmap bitmap = BitmapFactory.decodeFile(imagePath);
         boolean maxWidth = bitmap.getWidth()>bitmap.getHeight();
-        width = maxWidth? MAX_DIMENSION: MAX_DIMENSION*bitmap.getWidth()/bitmap.getHeight();
-        height = maxWidth? MAX_DIMENSION*bitmap.getHeight()/bitmap.getWidth():MAX_DIMENSION;
+        width = maxWidth? MAX_DIMENSION : MAX_DIMENSION * bitmap.getWidth() / bitmap.getHeight();
+        height = maxWidth? MAX_DIMENSION * bitmap.getHeight() / bitmap.getWidth(): MAX_DIMENSION;
         widthScale = width;
         heightScale = height;
         x = INIT_X;
@@ -89,6 +99,18 @@ public class FloatSticker extends ImageView {
         setOnClickListener(onClickListener);
         rectBorder = new Rect(0, 0, (int)widthScale, (int)heightScale);
         drawBorder = true;
+
+        imageHolder = new ImageHolder();
+        anchorPoint = mActivity.mTextFragment.getLayoutImagePosition();
+    }
+
+    public void updateImageHolder(float layoutScale){
+        imageHolder.imagePath = imagePath;
+        imageHolder.width = (int)(widthScale*layoutScale);
+        imageHolder.height = (int) (heightScale*layoutScale);
+        imageHolder.x = xExport*layoutScale;
+        imageHolder.y = yExport*layoutScale;
+        imageHolder.rotate = (float) (-rotation* Math.PI/180);
     }
 
     private void initBorderPoints(){
@@ -228,12 +250,12 @@ public class FloatSticker extends ImageView {
 
         canvas.save();
         // befor N canvas apply matrix from leftside of screen
-//        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
-//            matrix.postTranslate(mActivity.mVideoViewLeft, 0);
-//            Rect rectBound = canvas.getClipBounds();
-//            canvas.clipRect(rectBound.left, rectBound.top,
-//                    rectBound.right + mActivity.mVideoViewLeft, rectBound.bottom, Region.Op.REPLACE);
-//        }
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N){
+            matrix.postTranslate(anchorPoint[0], anchorPoint[1]);
+            Rect rectBound = canvas.getClipBounds();
+            canvas.clipRect(rectBound.left, rectBound.top,
+                    rectBound.right + anchorPoint[0], anchorPoint[1], Region.Op.REPLACE);
+        }
 
         canvas.setMatrix(matrix);
         canvas.drawRect(rectBorder, paint);

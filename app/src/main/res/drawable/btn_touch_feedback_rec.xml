@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android" >
+    <!-- Button Pressed / Feedback -->
+	<item
+    	android:state_pressed="true"
+    	android:state_enabled="true">
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+            <solid
+                    android:color="#99292828">
+                </solid>
+
+            <stroke
+                android:width="0dp"
+                android:color="#B8B6B6" />
+        </shape>
+	</item>
+    <item>
+        <shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="rectangle">
+
+        <solid
+            android:color="#00292828">
+        </solid>
+
+        <stroke
+            android:width="0dp"
+            android:color="#B8B6B6" />
+        </shape>
+    </item>
+
+</selector>

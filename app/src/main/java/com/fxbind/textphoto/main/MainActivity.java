@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.fxbind.textphoto.R;
 import com.fxbind.textphoto.export.ExportTask;
@@ -30,8 +31,8 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
 
     public Menu mOptionMenu;
     public MenuItem mBtnDelete, mBtnShare,
-                    mBtnExport, mBtnAddText;
-
+                    mBtnExport, mBtnAddText,
+                    mBtnAddSticker;
     public boolean mFirstRun;
     public boolean mOpenSubFolder;
     public boolean mOpenReview;
@@ -113,6 +114,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             return;
         }
         backToTextFragment();
+        Toast.makeText(this, R.string.notify_delete_file, Toast.LENGTH_LONG).show();
     }
 
     public void shareFile() {
@@ -161,11 +163,19 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         mBtnShare = menu.findItem(R.id.menu_share);
         mBtnExport = menu.findItem(R.id.menu_export);
         mBtnAddText = menu.findItem(R.id.menu_add_text);
+        mBtnAddSticker = menu.findItem(R.id.menu_add_sticker);
         setBtnDeleteTextVisible(false);
         setBtnShareVisible(false);
         setBtnExportVisible(false);
         setBtnAddTextVisible(false);
+        setBtnAddStickerVisible(false);
         return true;
+    }
+
+    public void setBtnAddStickerVisible(boolean visible){
+        if (mBtnAddSticker != null) {
+            mBtnAddSticker.setVisible(visible);
+        }
     }
 
     public void setBtnAddTextVisible(boolean visible){
@@ -208,7 +218,10 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             case R.id.menu_share:
                 shareFile();
                 break;
-            case R.id.menu_settings:
+            case R.id.menu_rotate:
+                mTextFragment.rotateImage();
+                break;
+            case R.id.menu_gallery:
                 openGallery();
                 break;
             case R.id.menu_contact_us:
@@ -218,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
                 rate5Stars();
                 break;
             case R.id.menu_add_sticker:
-                mTextFragment.addSticker();
+                mTextFragment.toggleLayoutSticker();
                 break;
             case android.R.id.home:
                 onBackClick();
@@ -274,6 +287,5 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         if (onBackClick()) {
             return;
         }
-//        super.onBackPressed();
     }
 }

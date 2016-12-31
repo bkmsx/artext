@@ -4,10 +4,10 @@
     <string name="menu_delete_text_title">Delete</string>
     <string name="menu_change_image_title">Change Image</string>
     <string name="menu_setting_title">Gallery</string>
-    <string name="menu_export_title">Export</string>
+    <string name="menu_export_title">Save</string>
     <string name="menu_close_gallery_title">Close</string>
     <string name="image_gallery_title">Images</string>
-    <string name="review_title">Done</string>
+    <string name="review_title">Saved</string>
     <string name="menu_share_title">Share</string>
     <string name="gallery_title">Gallery</string>
     <string name="menu_contact_us">Contact us</string>
@@ -19,4 +19,9 @@
     <string name="ok_button_text">OK</string>
     <string name="favorite_button_text">FAVORITE</string>
     <string name="all_button_text">ALL</string>
+
+    <string name="menu_add_sticker_title">Add Sticker</string>
+    <string name="notify_delete_file">Image was deleted</string>
+
+    <string name="menu_rotate_title">Rotate image</string>
 </resources>

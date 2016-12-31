@@ -7,7 +7,7 @@
     <string name="menu_export_title">Lưu</string>
     <string name="menu_close_gallery_title">Đóng</string>
     <string name="image_gallery_title">Ảnh</string>
-    <string name="review_title">Xong</string>
+    <string name="review_title">Đã lưu</string>
     <string name="menu_share_title">Chia sẻ</string>
     <string name="gallery_title">Bộ sưu tập</string>
     <string name="menu_contact_us">Liên hệ</string>
@@ -19,4 +19,6 @@
     <string name="ok_button_text">OK</string>
     <string name="favorite_button_text">ƯA THÍCH</string>
     <string name="all_button_text">TẤT CẢ</string>
+    <string name="menu_add_sticker_title">Chèn icon</string>
+    <string name="notify_delete_file">Ảnh đã được xóa</string>
 </resources>

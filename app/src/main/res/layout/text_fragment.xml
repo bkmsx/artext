@@ -23,6 +23,10 @@
                     android:id="@+id/image_view"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"/>
+                <RelativeLayout
+                    android:id="@+id/layout_floatview"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"/>
             </RelativeLayout>
             <ImageView
                 android:id="@+id/btn_first_addtext"
@@ -170,5 +174,86 @@
                 </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
+        <LinearLayout
+            android:id="@+id/layout_sticker"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                android:orientation="horizontal">
+                <LinearLayout
+                    android:id="@+id/sticker_tab_layout_1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/ic_background_tab"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/sticker_tab_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_video_tab_blue" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sticker_tab_layout_2"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_touch_feedback_rec"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/sticker_tab_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_image_tab" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/sticker_tab_layout_3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_touch_feedback_rec"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/sticker_tab_3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_audio_tab" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/tab_layout_close"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/btn_touch_feedback_rec"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/tab_close"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/ic_close" />
+                </LinearLayout>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="#326ee6" />
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/view_pager"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#696969" />
+        </LinearLayout>
     </RelativeLayout>
 </LinearLayout>
