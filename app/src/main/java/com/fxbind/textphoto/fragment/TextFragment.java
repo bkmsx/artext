@@ -1,7 +1,6 @@
 package com.fxbind.textphoto.fragment;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
@@ -45,6 +44,7 @@ import com.fxbind.textphoto.text.EditTextDialog;
 import com.fxbind.textphoto.text.FloatText;
 import com.fxbind.textphoto.text.FontAdapter;
 
+import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -88,8 +88,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     private boolean mChooseText;
     private boolean mOpenLayoutSticker;
     private int rotate = 0;
-
-    private static final String FONT_FOLDER = "fonts";
 
     public static TextFragment newInstance(MainActivity activity) {
         mActivity = activity;
@@ -178,7 +176,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         params.height = (int) (Utils.getScreenHeight() * 0.2f);
 
         setLayoutEditTextEnable(false);
-        new CopyFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        new LoadFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return view;
     }
 
@@ -289,7 +287,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
         @Override
         public Fragment getItem(int position) {
-            return FragmentSticker.newInstance(mActivity);
+            return FragmentSticker.newInstance(mActivity, position);
         }
 
         @Override
@@ -416,10 +414,11 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mLayoutFont.setVisibility(visibility);
     }
 
-    private class CopyFontTask extends AsyncTask<Void, Void, Void> {
+    private class LoadFontTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            copyFontsToStorage();
+            loadFontOf(Utils.getFontFolder());
+            loadFontOf(Utils.getUserFontFolder());
             return null;
         }
 
@@ -430,20 +429,20 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         }
     }
 
+    private void loadFontOf(String folderDirect) {
+        String[] list = new File(folderDirect).list();
+        for (String name : list) {
+            String path = folderDirect + "/" + name;
+            mListFont.add(path);
+        }
+    }
+
     private void createListFont() {
         mFontAdapter = new FontAdapter(mActivity, android.R.layout.simple_list_item_1, mListFont);
         mListViewFont.setAdapter(mFontAdapter);
     }
 
-    private void copyFontsToStorage(){
-        ArrayList<String> listFont = Utils.listFilesFromAssets(mActivity, FONT_FOLDER);
-        for (String font : listFont) {
-            String fontName = font.replace("/","_");
-            String destination = Utils.getFontFolder() + "/" + fontName;
-            Utils.copyFileFromAssets(mActivity, font, destination);
-            mListFont.add(destination);
-        }
-    }
+
 
     View.OnClickListener onBtnOkColorClick = new View.OnClickListener() {
         @Override
@@ -623,12 +622,12 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     }
 
     public void deleteSticker(){
-        mLayoutImage.removeView(mSelectedSticker);
+        mLayoutFloatView.removeView(mSelectedSticker);
         mListSticker.remove(mSelectedSticker);
     }
 
     public void deleteText() {
-        mLayoutImage.removeView(mSelectedFloatText);
+        mLayoutFloatView.removeView(mSelectedFloatText);
         mListText.remove(mSelectedFloatText);
         mCountText--;
     }

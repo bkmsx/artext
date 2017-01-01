@@ -121,7 +121,7 @@ public class FloatText extends ImageView {
         float textCorrection = 20;
         String textFile = Utils.getTempFolder()+"/"+System.currentTimeMillis()+".txt";
         Utils.writeToFile(new File(textFile), text);
-        textHolder.textPath = textFile;
+        textHolder.textPath = text;
         textHolder.fontPath = this.fontPath;
         textHolder.size = this.sizeScale*layoutScale;
         textHolder.fontColor = convertToHexColor(this.mColor);
@@ -132,6 +132,7 @@ public class FloatText extends ImageView {
         textHolder.width = (int) ((this.widthScale+FloatText.PADDING*2)*layoutScale);
         textHolder.height = (int) ((this.heightScale+FloatText.PADDING*2)*layoutScale);
         textHolder.padding = FloatText.PADDING * layoutScale;
+        log("font size = " + textHolder.size);
     }
 
     public String convertToHexColor(int color) {

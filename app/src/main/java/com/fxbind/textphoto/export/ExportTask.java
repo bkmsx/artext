@@ -3,6 +3,7 @@ package com.fxbind.textphoto.export;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.fxbind.textphoto.ffmpeg.FFmpeg;
 import com.fxbind.textphoto.helper.Utils;
@@ -55,7 +56,7 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
             in = "[image]";
         }
         if (mListSticker.size() > 0) {
-            out = "[sticker];";
+            out = mListText.size() > 0 ? "[sticker];" : "[sticker]";
             filter += ImageFilter.getFilter(in, out, mListSticker, 1);
             in = "[sticker]";
         }
@@ -75,6 +76,8 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
         command.add(out);
         command.add("-y");
         command.add(mOutputPath);
+
+        Log.e("Export", "getCommand: " + command );
         return command;
     }
 

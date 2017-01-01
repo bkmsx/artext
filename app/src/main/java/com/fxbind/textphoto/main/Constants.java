@@ -7,6 +7,7 @@ package com.fxbind.textphoto.main;
 public interface Constants {
     String OUTPUT_FOLDER = "TextOn";
     String TEMP_FOLDER = "temp";
-    String FONT_FOLDER = "font";
-    String BACKGROUND_FOLDER = "background";
+    String FONT_FOLDER = "fonts";
+    String USER_FONT_FOLDER = "user_fonts";
+    String BACKGROUND_FOLDER = "backgrounds";
 }

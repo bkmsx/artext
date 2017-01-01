@@ -2,8 +2,10 @@ package com.fxbind.textphoto.main;
 
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.media.MediaRouter;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,8 +20,10 @@ import com.fxbind.textphoto.fragment.FragmentGallery;
 import com.fxbind.textphoto.fragment.FragmentImagesGallery;
 import com.fxbind.textphoto.fragment.ReviewFragment;
 import com.fxbind.textphoto.fragment.TextFragment;
+import com.fxbind.textphoto.helper.Utils;
 
 import java.io.File;
+import java.util.ArrayList;
 
 
 /**
@@ -51,6 +55,24 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
                 replace(R.id.layout_fragment, mTextFragment).commit();
         mImageFragment = new FragmentImagesGallery();
         mFirstRun = true;
+        new CopyFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    class CopyFontTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... params) {
+            copyFontsToStorage();
+            return null;
+        }
+    }
+
+    private void copyFontsToStorage(){
+        ArrayList<String> listFont = Utils.listFilesFromAssets(this, Constants.FONT_FOLDER);
+        for (String font : listFont) {
+            String fontName = font.replace("/","_");
+            String destination = Utils.getFontFolder() + "/" + fontName;
+            Utils.copyFileFromAssets(this, font, destination);
+        }
     }
 
     public void setBtnBackActionBarVisible(boolean visible) {

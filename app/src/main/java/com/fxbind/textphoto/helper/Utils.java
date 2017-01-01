@@ -136,6 +136,16 @@ public class Utils {
         return fontFolder;
     }
 
+    public static String getUserFontFolder(){
+        String direct = Environment.getExternalStorageDirectory().toString();
+        String fontFolder = direct+"/"+ Constants.OUTPUT_FOLDER+"/"+Constants.USER_FONT_FOLDER;
+        File file = new File(fontFolder);
+        if (!file.exists()){
+            file.mkdirs();
+        }
+        return fontFolder;
+    }
+
     public static String getBackgroundFolder(){
         String direct = Environment.getExternalStorageDirectory().toString();
         String backgroundFolder = direct+"/"+ Constants.OUTPUT_FOLDER+"/"+Constants.BACKGROUND_FOLDER;

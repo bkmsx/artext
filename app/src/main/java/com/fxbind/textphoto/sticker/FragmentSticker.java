@@ -20,7 +20,6 @@ import com.fxbind.textphoto.helper.Utils;
 import com.fxbind.textphoto.interfaces.OnStickerClickListener;
 import com.fxbind.textphoto.main.MainActivity;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -28,15 +27,20 @@ import java.util.ArrayList;
  */
 
 public class FragmentSticker extends Fragment {
-    public static final String STICKER_FOLDER = "stickers/emoticons";
+    public static final String EMOTICONS_FOLDER = "stickers/emoticons";
+    public static final String PEOPLE_FOLDER = "stickers/people";
+    public static final String ACCESSORIES_FOLDER = "stickers/accessories";
     public static final String ASSETS_PATH = "file:///android_asset/";
 
     static MainActivity mActivity;
     ArrayList<String> listSticker;
     OnStickerClickListener mCallback;
 
-    public static FragmentSticker newInstance(MainActivity activity) {
+    static int mType;
+
+    public static FragmentSticker newInstance(MainActivity activity, int type) {
         mActivity = activity;
+        mType = type;
         return new FragmentSticker();
     }
 
@@ -46,7 +50,16 @@ public class FragmentSticker extends Fragment {
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_image_gallery, null);
         GridView gridView = (GridView) view.findViewById(R.id.grid_view);
-        listSticker = Utils.listFilesFromAssets(mActivity, STICKER_FOLDER);
+        String stickerFolder = "";
+        switch (mType) {
+            case 0: stickerFolder = EMOTICONS_FOLDER;
+                break;
+            case 1: stickerFolder = PEOPLE_FOLDER;
+                break;
+            case 2: stickerFolder = ACCESSORIES_FOLDER;
+                break;
+        }
+        listSticker = Utils.listFilesFromAssets(mActivity, stickerFolder);
         StickerAdapter stickerAdapter = new StickerAdapter(mActivity, R.layout.sticker_item, listSticker);
         gridView.setAdapter(stickerAdapter);
         gridView.setNumColumns(5);
