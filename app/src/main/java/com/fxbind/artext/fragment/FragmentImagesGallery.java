@@ -128,9 +128,9 @@ public class FragmentImagesGallery extends Fragment {
                 String nameBackground = assetsPath.replace("/", "_");
                 String backgroundPath = Utils.getTempFolder() + "/" + nameBackground;
                 Utils.copyFileFromAssets(mActivity, assetsPath, backgroundPath);
-                mActivity.mTextFragment.mImagePath = backgroundPath;
+                mActivity.mTextFragment.setImagePath(backgroundPath);
             } else {
-                mActivity.mTextFragment.mImagePath = mListImage.get(i);
+                mActivity.mTextFragment.setImagePath(mListImage.get(i));
             }
 
             mActivity.mFirstRun = false;

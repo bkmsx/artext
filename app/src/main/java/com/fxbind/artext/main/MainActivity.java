@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
 
     public void backToTextFragment() {
         if (mOpenReview) {
-            mFirstRun = true;
+            mTextFragment.setBtnAddFirstTime();
         }
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.layout_fragment, mTextFragment).commit();
@@ -108,8 +108,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         setBtnShareVisible(false);
         setBtnExportVisible(false);
         setTitle(getString(R.string.app_name));
-        mTextFragment.mListText.clear();
-        mTextFragment.mCountText = 0;
+        mTextFragment.resetAllFloatView();
         mOpenSubFolder = false;
         mOpenReview = false;
         mOpenGallery = false;

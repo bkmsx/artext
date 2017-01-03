@@ -1,5 +1,6 @@
 package com.fxbind.artext.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -67,6 +68,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     private LinearLayout mTabLayout1, mTabLayout2, mTabLayout3;
     private LinearLayout mLayoutSticker, mTabLayoutClose;
     private RelativeLayout mLayoutFloatView;
+    private View mView;
 
     public FloatText mSelectedFloatText;
     public ColorPickerView mColorPicker;
@@ -93,81 +95,82 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.text_fragment, null);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
+        if (mView != null) {
+            return mView;
+        }
+        mView = inflater.inflate(R.layout.text_fragment, null);
 
-        mMainLayout = (RelativeLayout) view.findViewById(R.id.main_layout);
+        mMainLayout = (RelativeLayout) mView.findViewById(R.id.main_layout);
 
-        mLayoutImage = (RelativeLayout) view.findViewById(R.id.layout_image);
+        mLayoutImage = (RelativeLayout) mView.findViewById(R.id.layout_image);
 
-        mImageView = (ImageView) view.findViewById(R.id.image_view);
+        mImageView = (ImageView) mView.findViewById(R.id.image_view);
 
-        mBtnText = (Button) view.findViewById(R.id.btn_text);
+        mBtnText = (Button) mView.findViewById(R.id.btn_text);
         mBtnText.setOnClickListener(onBtnTextClick);
 
-        mColorPicker = (ColorPickerView) view.findViewById(R.id.color_picker);
+        mColorPicker = (ColorPickerView) mView.findViewById(R.id.color_picker);
         mColorPicker.setAlphaSliderVisible(true);
         mColorPicker.setOnColorChangedListener(this);
 
-        mEdtHex = (EditText) view.findViewById(R.id.text_hex);
+        mEdtHex = (EditText) mView.findViewById(R.id.text_hex);
         mEdtHex.setOnEditorActionListener(onEditColorActionListener);
 
-        mLayoutColor = (LinearLayout) view.findViewById(R.id.layout_color);
+        mLayoutColor = (LinearLayout) mView.findViewById(R.id.layout_color);
 
-        mLayoutEditText = (RelativeLayout) view.findViewById(R.id.layout_edit_text);
+        mLayoutEditText = (RelativeLayout) mView.findViewById(R.id.layout_edit_text);
 
-        mBtnFont = (Button) view.findViewById(R.id.btn_font);
+        mBtnFont = (Button) mView.findViewById(R.id.btn_font);
         mBtnFont.setOnClickListener(onBtnFontClick);
 
-        mBtnColor = (Button) view.findViewById(R.id.btn_color);
+        mBtnColor = (Button) mView.findViewById(R.id.btn_color);
         mBtnColor.setOnClickListener(onBtnColorClick);
 
-        mBtnBackground = (Button) view.findViewById(R.id.btn_background);
+        mBtnBackground = (Button) mView.findViewById(R.id.btn_background);
         mBtnBackground.setOnClickListener(onBtnBgrClick);
 
-        mBtnOkColor = (Button) view.findViewById(R.id.btn_ok_color);
+        mBtnOkColor = (Button) mView.findViewById(R.id.btn_ok_color);
         mBtnOkColor.setOnClickListener(onBtnOkColorClick);
 
-        mListViewFont = (ListView) view.findViewById(R.id.listview_font);
+        mListViewFont = (ListView) mView.findViewById(R.id.listview_font);
         mListViewFont.setOnItemClickListener(onFontClickListener);
 
-        mLayoutFont = (LinearLayout) view.findViewById(R.id.layout_font);
+        mLayoutFont = (LinearLayout) mView.findViewById(R.id.layout_font);
 
-        mBtnOkFont = (Button) view.findViewById(R.id.btn_ok_font);
+        mBtnOkFont = (Button) mView.findViewById(R.id.btn_ok_font);
         mBtnOkFont.setOnClickListener(onBtnOkFontClick);
 
-        mBtnFavorite = (Button) view.findViewById(R.id.btn_favorite);
+        mBtnFavorite = (Button) mView.findViewById(R.id.btn_favorite);
         mBtnFavorite.setOnClickListener(onBtnFavoriteClick);
 
-        mBtnAddFirstTime = (ImageView) view.findViewById(R.id.btn_first_addtext);
+        mBtnAddFirstTime = (ImageView) mView.findViewById(R.id.btn_first_addtext);
 
-        mViewPager = (ViewPager) view.findViewById(R.id.view_pager);
+        mViewPager = (ViewPager) mView.findViewById(R.id.view_pager);
         mViewPager.addOnPageChangeListener(onViewPagerChanged);
 
-        mTabLayout1 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_1);
-        mTabLayout2 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_2);
-        mTabLayout3 = (LinearLayout) view.findViewById(R.id.sticker_tab_layout_3);
-        mTabLayoutClose = (LinearLayout) view.findViewById(R.id.tab_layout_close);
+        mTabLayout1 = (LinearLayout) mView.findViewById(R.id.sticker_tab_layout_1);
+        mTabLayout2 = (LinearLayout) mView.findViewById(R.id.sticker_tab_layout_2);
+        mTabLayout3 = (LinearLayout) mView.findViewById(R.id.sticker_tab_layout_3);
+        mTabLayoutClose = (LinearLayout) mView.findViewById(R.id.tab_layout_close);
         mTabLayout1.setOnClickListener(onTabClickListener);
         mTabLayout2.setOnClickListener(onTabClickListener);
         mTabLayout3.setOnClickListener(onTabClickListener);
         mTabLayoutClose.setOnClickListener(onTabClickListener);
 
-        mLayoutSticker = (LinearLayout) view.findViewById(R.id.layout_sticker);
-        mLayoutFloatView = (RelativeLayout) view.findViewById(R.id.layout_floatview);
+        mLayoutSticker = (LinearLayout) mView.findViewById(R.id.layout_sticker);
+        mLayoutFloatView = (RelativeLayout) mView.findViewById(R.id.layout_floatview);
 
         mListFont = new ArrayList<>();
         mListText = new ArrayList<>();
         mListSticker = new ArrayList<>();
 
-        setImagePath();
-        if (mActivity.mFirstRun) {
-            setBtnAddFirstTime();
-            mImageView.setImageBitmap(null);
-            mActivity.setBtnAddTextVisible(false);
-            mActivity.setBtnAddStickerVisible(false);
-            rotate = 0;
-        }
+        setBtnAddFirstTime();
+
+        mActivity.setBtnAddTextVisible(false);
+        mActivity.setBtnAddStickerVisible(false);
+        rotate = 0;
 
         mOpenLayoutSticker = false;
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLayoutEditText.getLayoutParams();
@@ -175,23 +178,49 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
         setLayoutEditTextEnable(false);
         new LoadFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        return view;
+        return mView;
     }
 
-    public void rotateImage(){
-        rotate += 90;
-        if (rotate == 360) {
-            rotate = 0;
+    public void rotateImage() {
+        new RotationTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    private class RotationTask extends AsyncTask<Void, Void, Void> {
+        Bitmap rotateBitmap;
+        ProgressDialog progressDialog;
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progressDialog = new ProgressDialog(mActivity);
+            progressDialog.setMessage("Wait..");
+            progressDialog.show();
         }
-        Matrix matrix = new Matrix();
-        matrix.postRotate(rotate);
-        Bitmap bitmap = BitmapFactory.decodeFile(mImagePath, null);
-        Bitmap rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        mImageWidth = rotateBitmap.getWidth();
-        mImageHeight = rotateBitmap.getHeight();
-        mImageView.setImageBitmap(rotateBitmap);
-        setLayoutImage();
-        resetAllFloatView();
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            rotate += 90;
+            if (rotate == 360) {
+                rotate = 0;
+            }
+            Matrix matrix = new Matrix();
+            matrix.postRotate(rotate);
+            Bitmap bitmap = BitmapFactory.decodeFile(mImagePath, null);
+            rotateBitmap = Bitmap.createBitmap(bitmap, 0, 0,
+                    bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            mImageWidth = rotateBitmap.getWidth();
+            mImageHeight = rotateBitmap.getHeight();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            progressDialog.dismiss();
+            mImageView.setImageBitmap(rotateBitmap);
+            setLayoutImage();
+            resetAllFloatView();
+        }
     }
 
     public void resetAllFloatView() {
@@ -207,13 +236,13 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             if (v.equals(mTabLayout1)) {
                 highlightSelectedTab(0);
                 mViewPager.setCurrentItem(0);
-            } else if (v.equals(mTabLayout2)){
+            } else if (v.equals(mTabLayout2)) {
                 highlightSelectedTab(1);
                 mViewPager.setCurrentItem(1);
-            } else if (v.equals(mTabLayout3)){
+            } else if (v.equals(mTabLayout3)) {
                 highlightSelectedTab(2);
                 mViewPager.setCurrentItem(2);
-            } else if (v.equals(mTabLayoutClose)){
+            } else if (v.equals(mTabLayoutClose)) {
                 closeLayoutSticker();
             }
         }
@@ -324,7 +353,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         floatText.drawBorder(true);
     }
 
-    public void updateLayoutEditText(){
+    public void updateLayoutEditText() {
         mFontAdapter.setSelectedPosition(mSelectedFloatText.fontId);
         if (mChooseColor) {
             int color = mSelectedFloatText.mColor;
@@ -344,7 +373,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mBtnFont.setEnabled(enable);
     }
 
-    private void setBtnAddFirstTime() {
+    public void setBtnAddFirstTime() {
+        mImageView.setImageBitmap(null);
         mBtnAddFirstTime.setVisibility(View.VISIBLE);
         mBtnAddFirstTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -370,7 +400,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
             if (mFontAdapter.onlyFavorite) {
                 mFontAdapter.showAllFont();
                 mBtnFavorite.setText(mActivity.getString(R.string.favorite_button_text));
-            } else{
+            } else {
                 mFontAdapter.showOnlyFavorite();
                 mBtnFavorite.setText(mActivity.getString(R.string.all_button_text));
             }
@@ -425,7 +455,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     }
 
 
-
     View.OnClickListener onBtnOkColorClick = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
@@ -466,7 +495,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         }
     };
 
-    private void unhighlightSticker(){
+    private void unhighlightSticker() {
         if (mSelectedSticker != null) {
             mSelectedSticker.drawBorder(false);
         }
@@ -487,7 +516,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     };
 
     private void openLayoutColor(boolean open) {
-        int visible = open? View.VISIBLE : View.GONE;
+        int visible = open ? View.VISIBLE : View.GONE;
         mLayoutColor.setVisibility(visible);
     }
 
@@ -532,28 +561,27 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
                 InputMethodManager.SHOW_FORCED, 0);
     }
 
-    public void setImagePath(){
-        if (mImagePath == null) {
-            return;
-        }
+    public void setImagePath(String imagePath) {
+        mImagePath = imagePath;
         Bitmap bitmap = BitmapFactory.decodeFile(mImagePath, null);
         mImageWidth = bitmap.getWidth();
         mImageHeight = bitmap.getHeight();
         mImageView.setImageBitmap(bitmap);
+        mBtnAddFirstTime.setVisibility(View.GONE);
         setLayoutImage();
     }
 
-    private void setLayoutImage(){
+    private void setLayoutImage() {
         RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) mLayoutImage.getLayoutParams();
         float heightLimit = Utils.getScreenHeight() * 0.7f;
         float widthLimit = Utils.getScreenWidth() * 0.97f;
-        boolean chooseHeight = heightLimit/(float)mImageHeight < widthLimit/(float)mImageWidth;
+        boolean chooseHeight = heightLimit / (float) mImageHeight < widthLimit / (float) mImageWidth;
         if (chooseHeight) {
-            params.height = (int)heightLimit;
-            params.width = (int) (heightLimit*mImageWidth/mImageHeight);
+            params.height = (int) heightLimit;
+            params.width = (int) (heightLimit * mImageWidth / mImageHeight);
         } else {
             params.width = (int) widthLimit;
-            params.height = (int) (widthLimit*mImageHeight/mImageWidth);
+            params.height = (int) (widthLimit * mImageHeight / mImageWidth);
         }
     }
 
@@ -583,7 +611,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mChooseText = true;
     }
 
-    private void unhighlightFloatText(){
+    private void unhighlightFloatText() {
         if (mSelectedFloatText != null) {
             mSelectedFloatText.drawBorder(false);
         }
@@ -603,7 +631,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         }
     }
 
-    public void deleteSticker(){
+    public void deleteSticker() {
         mLayoutFloatView.removeView(mSelectedSticker);
         mListSticker.remove(mSelectedSticker);
     }
@@ -643,7 +671,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         }
     };
 
-    private int convertToIntegerColor (String hexColor) throws IllegalArgumentException{
+    private int convertToIntegerColor(String hexColor) throws IllegalArgumentException {
         return Color.parseColor("#" + hexColor);
     }
 
@@ -659,7 +687,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private float getLayoutScale(){
+    private float getLayoutScale() {
         return (float) mImageHeight / (float) mLayoutImage.getHeight();
     }
 
