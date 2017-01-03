@@ -6,4 +6,5 @@
     <color name="background">#8a8585</color>
     <color name="color_layout">#222912</color>
     <color name="background_layout">#3c1d1d</color>
+    <color name="tab_highline_color">#2f2e2e</color>
 </resources>

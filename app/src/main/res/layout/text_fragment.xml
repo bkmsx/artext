@@ -128,7 +128,7 @@
                     </LinearLayout>
 
                 </LinearLayout>
-                <com.fxbind.textphoto.color.ColorPickerView
+                <com.fxbind.artext.color.ColorPickerView
                     android:id="@+id/color_picker"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -184,7 +184,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="30dp"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:background="#4a4949">
                 <LinearLayout
                     android:id="@+id/sticker_tab_layout_1"
                     android:layout_width="0dp"
@@ -197,7 +198,8 @@
                         android:id="@+id/sticker_tab_1"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_video_tab_blue" />
+                        android:padding="@dimen/tab_padding"
+                        android:src="@drawable/ic_tab1" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -212,7 +214,8 @@
                         android:id="@+id/sticker_tab_2"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_image_tab" />
+                        android:padding="@dimen/tab_padding"
+                        android:src="@drawable/ic_tab2" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -227,7 +230,8 @@
                         android:id="@+id/sticker_tab_3"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
-                        android:src="@drawable/ic_audio_tab" />
+                        android:padding="@dimen/tab_padding"
+                        android:src="@drawable/ic_tab3" />
                 </LinearLayout>
                 <LinearLayout
                     android:id="@+id/tab_layout_close"
@@ -241,19 +245,16 @@
                         android:id="@+id/tab_close"
                         android:layout_width="wrap_content"
                         android:layout_height="match_parent"
+                        android:padding="@dimen/tab_padding"
                         android:src="@drawable/ic_close" />
                 </LinearLayout>
             </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:background="#326ee6" />
-
             <android.support.v4.view.ViewPager
                 android:id="@+id/view_pager"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="#696969" />
+                android:paddingTop="5dp"
+                android:background="@color/tab_highline_color" />
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

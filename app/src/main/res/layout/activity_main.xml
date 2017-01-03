@@ -4,7 +4,7 @@
     android:id="@+id/main_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.fxbind.textphoto.main.MainActivity">
+    tools:context="com.fxbind.artext.main.MainActivity">
 
     <FrameLayout
         android:id="@+id/layout_fragment"

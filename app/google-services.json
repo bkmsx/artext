@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "258587718622",
+    "firebase_url": "https://artext-e7b2a.firebaseio.com",
+    "project_id": "artext-e7b2a",
+    "storage_bucket": "artext-e7b2a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:258587718622:android:7ee81838e9ede8e5",
+        "android_client_info": {
+          "package_name": "com.fxbind.artext"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "258587718622-t87he6ch67isvh8q9utc57urg4gbosbd.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBIZjlja7Tuhqte9K0m5BXIsWb1RE-wwVU"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
