@@ -86,7 +86,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
     public int mCountText;
     private boolean mChooseText;
     private boolean mOpenLayoutSticker;
-    private int rotate = 0;
+    public int rotate = 0;
 
     public static TextFragment newInstance(MainActivity activity) {
         mActivity = activity;
@@ -168,8 +168,6 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
         setBtnAddFirstTime();
 
-        mActivity.setBtnAddTextVisible(false);
-        mActivity.setBtnAddStickerVisible(false);
         rotate = 0;
 
         mOpenLayoutSticker = false;
@@ -177,8 +175,11 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         params.height = (int) (Utils.getScreenHeight() * 0.2f);
 
         setLayoutEditTextEnable(false);
-        new LoadFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         return mView;
+    }
+
+    public void loadAllFonts() {
+        new LoadFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     public void rotateImage() {
@@ -375,6 +376,7 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
     public void setBtnAddFirstTime() {
         mImageView.setImageBitmap(null);
+        mImagePath = null;
         mBtnAddFirstTime.setVisibility(View.VISIBLE);
         mBtnAddFirstTime.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -382,6 +384,8 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
                 mActivity.openFileManager();
             }
         });
+        resetAllFloatView();
+        setLayoutEditTextEnable(false);
     }
 
     @Override
@@ -443,9 +447,12 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
 
     private void loadFontOf(String folderDirect) {
         String[] list = new File(folderDirect).list();
+        log("folderDirect = " + folderDirect);
+        log("number = " + list.length);
         for (String name : list) {
             String path = folderDirect + "/" + name;
             mListFont.add(path);
+            log(path);
         }
     }
 
@@ -568,7 +575,9 @@ public class TextFragment extends Fragment implements EditTextDialog.DialogClick
         mImageHeight = bitmap.getHeight();
         mImageView.setImageBitmap(bitmap);
         mBtnAddFirstTime.setVisibility(View.GONE);
+        rotate = 0;
         setLayoutImage();
+        resetAllFloatView();
     }
 
     private void setLayoutImage() {

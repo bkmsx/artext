@@ -132,8 +132,6 @@ public class FragmentImagesGallery extends Fragment {
             } else {
                 mActivity.mTextFragment.setImagePath(mListImage.get(i));
             }
-
-            mActivity.mFirstRun = false;
             mActivity.setBtnAddTextVisible(true);
             mActivity.setBtnAddStickerVisible(true);
             mActivity.backToTextFragment();

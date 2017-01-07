@@ -24,31 +24,10 @@
             android:icon="@drawable/ic_share"
             app:showAsAction="always"/>
         <item
-            android:id="@+id/menu_export"
-            android:title="@string/menu_export_title"
-            android:icon="@drawable/ic_export"
-            app:showAsAction="never"/>
-        <item
-            android:id="@+id/menu_rotate"
-            android:title="@string/menu_rotate_title"
-            app:showAsAction="never"/>
-
-        <item
-            android:id="@+id/menu_change_image"
-            android:title="@string/menu_change_image_title"
-            app:showAsAction="never"/>
-        <item
-            android:id="@+id/menu_gallery"
-            android:title="@string/menu_setting_title"
-            app:showAsAction="never"/>
-        <item
-            android:id="@+id/menu_contact_us"
-            android:title="@string/menu_contact_us"
-            app:showAsAction="never"/>
-        <item
-            android:id="@+id/menu_rate"
-            android:title="@string/menu_rate"
-            app:showAsAction="never"/>
+            android:id="@+id/menu_more"
+            android:title="@string/menu_more_title"
+            android:icon="@drawable/ic_more"
+            app:showAsAction="always"/>
     </group>
 
 </menu>

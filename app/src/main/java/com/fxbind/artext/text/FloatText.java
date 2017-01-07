@@ -12,6 +12,7 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Typeface;
 import android.os.Build;
+import android.support.v7.widget.AppCompatImageView;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -36,7 +37,7 @@ import java.io.File;
  * Created by TienDam on 11/14/2016.
  */
 
-public class FloatText extends ImageView {
+public class FloatText extends AppCompatImageView {
     public MainActivity mActivity;
     public TextFragment mTextFragment;
 
@@ -259,6 +260,9 @@ public class FloatText extends ImageView {
                 widthScale += moveX;
             } else {
                 widthScale -= moveX;
+                if (widthScale < 20) {
+                    widthScale = 20;
+                }
             }
             scaleValue = widthScale/width;
             heightScale = scaleValue*height;
@@ -267,6 +271,9 @@ public class FloatText extends ImageView {
                 heightScale += moveY;
             } else {
                 heightScale -= moveY;
+                if (heightScale < 20) {
+                    heightScale = 20;
+                }
             }
             scaleValue = heightScale/height;
             widthScale = scaleValue*width;
@@ -322,7 +329,7 @@ public class FloatText extends ImageView {
         }
 
         paint.setStyle(Paint.Style.STROKE);
-        paint.setColor(Color.MAGENTA);
+        paint.setColor(Color.CYAN);
         paint.setStrokeWidth(3);
         paint.setPathEffect(new DashPathEffect(new float[] {8,6}, 0));
         canvas.drawRect(rectBorder, paint);

@@ -6,7 +6,9 @@
         android:id="@+id/image_view"
         android:layout_width="@dimen/gridview_item_dimen"
         android:layout_height="@dimen/gridview_item_dimen"
-        android:layout_centerHorizontal="true"/>
+        android:padding="5dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/ic_background_folder"/>
     <TextView
         android:id="@+id/text_view"
         android:layout_marginTop="10dp"
@@ -18,10 +20,10 @@
         android:layout_centerHorizontal="true"
         android:maxLines="1"
         android:ellipsize="end"/>
-    <ImageView
-        android:id="@+id/icon_folder"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:layout_marginLeft="20dp"
-        android:src="@drawable/ic_folder" />
+    <!--<ImageView-->
+        <!--android:id="@+id/icon_folder"-->
+        <!--android:layout_width="20dp"-->
+        <!--android:layout_height="20dp"-->
+        <!--android:layout_marginLeft="20dp"-->
+        <!--android:src="@drawable/ic_folder" />-->
 </RelativeLayout>

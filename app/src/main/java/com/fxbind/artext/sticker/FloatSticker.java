@@ -182,6 +182,9 @@ public class FloatSticker extends ImageView {
                 widthScale += moveX;
             } else {
                 widthScale -= moveX;
+                if (widthScale < 20) {
+                    widthScale = 20;
+                }
             }
             scaleValue = widthScale/width;
             heightScale = scaleValue*height;
@@ -190,6 +193,9 @@ public class FloatSticker extends ImageView {
                 heightScale += moveY;
             } else {
                 heightScale -= moveY;
+                if (heightScale < 20) {
+                    heightScale = 20;
+                }
             }
             scaleValue = heightScale/height;
             widthScale = scaleValue*width;

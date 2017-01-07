@@ -7,6 +7,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.PopupMenu;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -33,10 +34,8 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
     public FragmentImagesGallery mImageFragment;
 
     public Menu mOptionMenu;
-    public MenuItem mBtnDelete, mBtnShare,
-                    mBtnExport, mBtnAddText,
-                    mBtnAddSticker;
-    public boolean mFirstRun;
+    public MenuItem mBtnDelete, mBtnShare, mBtnAddText,
+                    mBtnAddSticker, mBtnMore;
     public boolean mOpenSubFolder;
     public boolean mOpenReview;
     public boolean mOpenGallery;
@@ -54,7 +53,6 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
                 add(R.id.layout_fragment, mTextFragment).commit();
 
         mImageFragment = new FragmentImagesGallery();
-        mFirstRun = true;
         new CopyFontTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
@@ -64,6 +62,12 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             deleteOldFonts();
             copyFontsToStorage();
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            mTextFragment.loadAllFonts();
         }
     }
 
@@ -99,16 +103,18 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
     public void backToTextFragment() {
         if (mOpenReview) {
             mTextFragment.setBtnAddFirstTime();
+            setBtnDeleteTextVisible(false);
+            setBtnShareVisible(false);
         }
         getSupportFragmentManager().beginTransaction().
                 replace(R.id.layout_fragment, mTextFragment).commit();
-        setMainGroupMenuVisible(true);
-        setBtnDeleteTextVisible(false);
         setBtnBackActionBarVisible(false);
-        setBtnShareVisible(false);
-        setBtnExportVisible(false);
+        setBtnMoreVisible(true);
+        if (mTextFragment.mImagePath != null) {
+            setBtnAddStickerVisible(true);
+            setBtnAddTextVisible(true);
+        }
         setTitle(getString(R.string.app_name));
-        mTextFragment.resetAllFloatView();
         mOpenSubFolder = false;
         mOpenReview = false;
         mOpenGallery = false;
@@ -179,7 +185,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
     }
 
     public void setBtnExportVisible(boolean visible) {
-        mBtnExport.setVisible(visible);
+//        mBtnExport.setVisible(visible);
     }
 
     @Override
@@ -190,15 +196,18 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
         mOptionMenu = menu;
         mBtnDelete = menu.findItem(R.id.menu_delete_text);
         mBtnShare = menu.findItem(R.id.menu_share);
-        mBtnExport = menu.findItem(R.id.menu_export);
         mBtnAddText = menu.findItem(R.id.menu_add_text);
         mBtnAddSticker = menu.findItem(R.id.menu_add_sticker);
-        setBtnDeleteTextVisible(false);
-        setBtnShareVisible(false);
-        setBtnExportVisible(false);
-        setBtnAddTextVisible(false);
-        setBtnAddStickerVisible(false);
+        mBtnMore = menu.findItem(R.id.menu_more);
+        setMainGroupMenuVisible(false);
+        setBtnMoreVisible(true);
         return true;
+    }
+
+    public void setBtnMoreVisible(boolean visible) {
+        if (mBtnMore != null) {
+            mBtnMore.setVisible(visible);
+        }
     }
 
     public void setBtnAddStickerVisible(boolean visible){
@@ -210,6 +219,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
     public void setBtnAddTextVisible(boolean visible){
         if (mBtnAddText != null) {
             mBtnAddText.setVisible(visible);
+            log("hide add text");
         }
     }
 
@@ -230,12 +240,6 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
                 setBtnDeleteTextVisible(true);
                 setBtnExportVisible(true);
                 return true;
-            case R.id.menu_export:
-                mTextFragment.exportFile();
-                return true;
-            case R.id.menu_change_image:
-                openFileManager();
-                break;
             case R.id.menu_delete_text:
                 if (mOpenReview) {
                     deleteFile();
@@ -247,27 +251,63 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
             case R.id.menu_share:
                 shareFile();
                 break;
-            case R.id.menu_rotate:
-                mTextFragment.rotateImage();
-                break;
-            case R.id.menu_gallery:
-                openGallery();
-                break;
-            case R.id.menu_contact_us:
-                contactUs();
-                break;
-            case R.id.menu_rate:
-                rate5Stars();
-                break;
             case R.id.menu_add_sticker:
                 mTextFragment.toggleLayoutSticker();
+                break;
+            case R.id.menu_more:
+                showPopupMenu();
                 break;
             case android.R.id.home:
                 onBackClick();
                 break;
+
         }
         return super.onOptionsItemSelected(item);
     }
+
+    private void showPopupMenu() {
+        PopupMenu popup = new PopupMenu(MainActivity.this, findViewById(R.id.menu_more));
+
+        popup.getMenuInflater()
+                .inflate(R.menu.popup_menu, popup.getMenu());
+        Menu menu = popup.getMenu();
+        MenuItem menuSave = menu.findItem(R.id.menu_save);
+        MenuItem menuRotate = menu.findItem(R.id.menu_rotate);
+        boolean menuRotateVisible = mTextFragment.mImagePath != null;
+        boolean menuSaveVisible = !(mTextFragment.mListText.isEmpty()
+                                        && mTextFragment.mListSticker.isEmpty() && mTextFragment.rotate == 0);
+        menuSave.setVisible(menuSaveVisible);
+        menuRotate.setVisible(menuRotateVisible);
+        popup.setOnMenuItemClickListener(onMenuItemClickListener);
+        popup.show();
+    }
+
+    PopupMenu.OnMenuItemClickListener onMenuItemClickListener = new PopupMenu.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.menu_save:
+                    mTextFragment.exportFile();
+                    return true;
+                case R.id.menu_rotate:
+                    mTextFragment.rotateImage();
+                    break;
+                case R.id.menu_change_image:
+                    openFileManager();
+                    break;
+                case R.id.menu_gallery:
+                    openGallery();
+                    break;
+                case R.id.menu_contact_us:
+                    contactUs();
+                    break;
+                case R.id.menu_rate:
+                    rate5Stars();
+                    break;
+            }
+            return true;
+        }
+    };
 
     private void rate5Stars(){
         Uri uri = Uri.parse("market://details?id=" + getPackageName());
@@ -313,9 +353,7 @@ public class MainActivity extends AppCompatActivity implements ExportTask.OnExpo
 
     @Override
     public void onBackPressed() {
-        if (onBackClick()) {
-            return;
-        }
+        onBackClick();
     }
 
     @Override

@@ -45,7 +45,7 @@ public class ExportTask extends AsyncTask<Void, Void, Void>{
         String in = "[0:v]";
         String out = "[image]";
         if (mRotate != 0) {
-            out = "[image];";
+            out = mListSticker.size() > 0 || mListText.size() > 0 ? "[image];" : "[image]";
             if (mRotate == 90) {
                 filter += in + "transpose=1" + out;
             } else if (mRotate == 180) {
